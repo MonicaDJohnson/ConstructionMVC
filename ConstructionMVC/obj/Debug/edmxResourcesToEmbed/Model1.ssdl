@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ConstructionDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Phone" Type="nchar" MaxLength="10" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Houses">
+    <Key>
+      <PropertyRef Name="Location_HouseID" />
+    </Key>
+    <Property Name="Location_HouseID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Rooms" Type="nvarchar" MaxLength="50" />
+    <Property Name="Floors" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsGarage" Type="bit" />
+    <Property Name="BuildDate" Type="nchar" MaxLength="10" />
+    <Property Name="CustomerID" Type="int" />
+    <Property Name="LocationID" Type="int" />
+  </EntityType>
+  <EntityType Name="Locations">
+    <Key>
+      <PropertyRef Name="LocationID" />
+    </Key>
+    <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StreetName" Type="nvarchar" MaxLength="50" />
+    <Property Name="StreetNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="City" Type="nvarchar" MaxLength="50" />
+    <Property Name="State" Type="nvarchar" MaxLength="50" />
+    <Property Name="Zip" Type="nchar" MaxLength="10" />
+    <Property Name="HouseID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Types">
+    <Key>
+      <PropertyRef Name="TypeID" />
+    </Key>
+    <Property Name="TypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Style" Type="nvarchar" MaxLength="50" />
+    <Property Name="HouseID" Type="int" />
+  </EntityType>
+  <Association Name="FK_Houses_Customers">
+    <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+    <End Role="Houses" Type="Self.Houses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Houses">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Houses_Locations">
+    <End Role="Locations" Type="Self.Locations" Multiplicity="1" />
+    <End Role="Houses" Type="Self.Houses" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Locations">
+        <PropertyRef Name="LocationID" />
+      </Principal>
+      <Dependent Role="Houses">
+        <PropertyRef Name="Location_HouseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Locations_Houses">
+    <End Role="Houses" Type="Self.Houses" Multiplicity="1" />
+    <End Role="Locations" Type="Self.Locations" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Houses">
+        <PropertyRef Name="Location_HouseID" />
+      </Principal>
+      <Dependent Role="Locations">
+        <PropertyRef Name="LocationID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Types_Houses">
+    <End Role="Houses" Type="Self.Houses" Multiplicity="0..1" />
+    <End Role="Types" Type="Self.Types" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Houses">
+        <PropertyRef Name="Location_HouseID" />
+      </Principal>
+      <Dependent Role="Types">
+        <PropertyRef Name="HouseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ConstructionDBModelStoreContainer">
+    <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Houses" EntityType="Self.Houses" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Types" EntityType="Self.Types" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Houses_Customers" Association="Self.FK_Houses_Customers">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="Houses" EntitySet="Houses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Houses_Locations" Association="Self.FK_Houses_Locations">
+      <End Role="Locations" EntitySet="Locations" />
+      <End Role="Houses" EntitySet="Houses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Locations_Houses" Association="Self.FK_Locations_Houses">
+      <End Role="Houses" EntitySet="Houses" />
+      <End Role="Locations" EntitySet="Locations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Types_Houses" Association="Self.FK_Types_Houses">
+      <End Role="Houses" EntitySet="Houses" />
+      <End Role="Types" EntitySet="Types" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

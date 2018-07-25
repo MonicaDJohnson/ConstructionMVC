@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ConstructionDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Houses" Relationship="ConstructionDBModel.FK_Houses_Customers" FromRole="Customer" ToRole="House" />
+  </EntityType>
+  <EntityType Name="House">
+    <Key>
+      <PropertyRef Name="Location_HouseID" />
+    </Key>
+    <Property Name="Location_HouseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Rooms" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Floors" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsGarage" Type="Boolean" />
+    <Property Name="BuildDate" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="CustomerID" Type="Int32" />
+    <Property Name="LocationID" Type="Int32" />
+    <NavigationProperty Name="Location" Relationship="Self.FK_Houses_Locations" FromRole="Houses" ToRole="Locations" />
+    <NavigationProperty Name="Location1" Relationship="Self.FK_Locations_Houses" FromRole="Houses" ToRole="Locations" />
+    <NavigationProperty Name="Types" Relationship="Self.FK_Types_Houses" FromRole="Houses" ToRole="Types" />
+    <NavigationProperty Name="Customer" Relationship="ConstructionDBModel.FK_Houses_Customers" FromRole="House" ToRole="Customer" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="LocationID" />
+    </Key>
+    <Property Name="LocationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StreetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="StreetNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Zip" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="HouseID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="House" Relationship="Self.FK_Houses_Locations" FromRole="Locations" ToRole="Houses" />
+    <NavigationProperty Name="House1" Relationship="Self.FK_Locations_Houses" FromRole="Locations" ToRole="Houses" />
+  </EntityType>
+  <EntityType Name="Type">
+    <Key>
+      <PropertyRef Name="TypeID" />
+    </Key>
+    <Property Name="TypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Style" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="HouseID" Type="Int32" />
+    <NavigationProperty Name="House" Relationship="Self.FK_Types_Houses" FromRole="Types" ToRole="Houses" />
+  </EntityType>
+  <Association Name="FK_Houses_Locations">
+    <End Role="Locations" Type="Self.Location" Multiplicity="1" />
+    <End Role="Houses" Type="Self.House" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Locations">
+        <PropertyRef Name="LocationID" />
+      </Principal>
+      <Dependent Role="Houses">
+        <PropertyRef Name="Location_HouseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Locations_Houses">
+    <End Role="Houses" Type="Self.House" Multiplicity="1" />
+    <End Role="Locations" Type="Self.Location" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Houses">
+        <PropertyRef Name="Location_HouseID" />
+      </Principal>
+      <Dependent Role="Locations">
+        <PropertyRef Name="LocationID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Types_Houses">
+    <End Role="Houses" Type="Self.House" Multiplicity="0..1" />
+    <End Role="Types" Type="Self.Type" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Houses">
+        <PropertyRef Name="Location_HouseID" />
+      </Principal>
+      <Dependent Role="Types">
+        <PropertyRef Name="HouseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ConstructionDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="Houses" EntityType="Self.House" />
+    <EntitySet Name="Locations" EntityType="Self.Location" />
+    <EntitySet Name="Types" EntityType="Self.Type" />
+    <AssociationSet Name="FK_Houses_Locations" Association="Self.FK_Houses_Locations">
+      <End Role="Locations" EntitySet="Locations" />
+      <End Role="Houses" EntitySet="Houses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Locations_Houses" Association="Self.FK_Locations_Houses">
+      <End Role="Houses" EntitySet="Houses" />
+      <End Role="Locations" EntitySet="Locations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Types_Houses" Association="Self.FK_Types_Houses">
+      <End Role="Houses" EntitySet="Houses" />
+      <End Role="Types" EntitySet="Types" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Houses_Customers" Association="ConstructionDBModel.FK_Houses_Customers">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="House" EntitySet="Houses" />
+    </AssociationSet>
+  </EntityContainer>
+  <Association Name="FK_Houses_Customers">
+    <End Type="ConstructionDBModel.Customer" Role="Customer" Multiplicity="0..1" />
+    <End Type="ConstructionDBModel.House" Role="House" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="House">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
